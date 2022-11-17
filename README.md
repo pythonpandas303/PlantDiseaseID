@@ -9,7 +9,7 @@ General Plant data: <https://www.kaggle.com/datasets/sadmansakibmahi/plant-disea
 Tomato data: <https://www.kaggle.com/datasets/cookiefinder/tomato-disease-multiple-sources><br>
 
 ### Packages
-This is an all encompassing list including those used for data cleaning, visualizations, and modeling
+This is an all encompassing list including those used for data cleaning, visualizations, and modeling.<br>
 <code>
   os,
   pandas,
