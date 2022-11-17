@@ -11,24 +11,24 @@ Tomato data: <https://www.kaggle.com/datasets/cookiefinder/tomato-disease-multip
 ### Packages
 This is an all encompassing list including those used for data cleaning, visualizations, and modeling
 <code>
-  os<br>
-  pandas
-  seaborn
-  matplotlib.pyplot 
-  plotly_express
-  glob
-  pathlib
-  nbformat
-  pandas
-  PIL
-  tensorflow 
-  pathlib
-  tensorflow.keras
-  tensorflow.keras.layers
-  tensorflow.keras.models.Sequential
-  keras.callbacks.EarlyStopping
-  keras.layers. (Dense, Conv2D, MaxPool2D , Flatten)
-  keras.preprocessing.image.ImageDataGenerator
+  os,
+  pandas,
+  seaborn,
+  matplotlib.pyplot, 
+  plotly_express,
+  glob,
+  pathlib,
+  nbformat,
+  pandas,
+  PIL,
+  tensorflow, 
+  pathlib,
+  tensorflow.keras,
+  tensorflow.keras.layers,
+  tensorflow.keras.models.Sequential,
+  keras.callbacks.EarlyStopping,
+  keras.layers. (Dense, Conv2D, MaxPool2D , Flatten),
+  keras.preprocessing.image.ImageDataGenerator,
   math
-<\code>  
+<code>  
   
