@@ -5,13 +5,13 @@ This project is inteded to explore the identification of agriculturally signific
 ### Data Sources
 The data used in this project were too large to include here, but are publically available at the following locations:
 
-General Plant data: <https://www.kaggle.com/datasets/sadmansakibmahi/plant-disease-expert>
-Tomato data: <https://www.kaggle.com/datasets/cookiefinder/tomato-disease-multiple-sources>
+General Plant data: <https://www.kaggle.com/datasets/sadmansakibmahi/plant-disease-expert><br>
+Tomato data: <https://www.kaggle.com/datasets/cookiefinder/tomato-disease-multiple-sources><br>
 
 ### Packages
 This is an all encompassing list including those used for data cleaning, visualizations, and modeling
 <code>
-  os
+  os<br>
   pandas
   seaborn
   matplotlib.pyplot 
