@@ -29,6 +29,5 @@ This is an all encompassing list including those used for data cleaning, visuali
   keras.callbacks.EarlyStopping,
   keras.layers. (Dense, Conv2D, MaxPool2D , Flatten),
   keras.preprocessing.image.ImageDataGenerator,
-  math
-<code>  
+  math</code>
   
