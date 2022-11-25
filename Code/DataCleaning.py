@@ -1,6 +1,7 @@
-### MSDS696 Project ###
-### Instructor: John Koenig ###
-### Tom Teasdale ###
+### Final Project
+### MSDS696
+### Tom Teasdale
+
 import os
 import pandas as pd
 import nbformat

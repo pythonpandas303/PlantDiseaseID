@@ -1,3 +1,14 @@
+### Final Project
+### MSDS696
+### Tom Teasdale
+
+### Image classification for plant pathology data set. Currently the final model is the most 
+### accurate and should be applied to all future data sets. Final chunk is wrapping into 
+### TF Lite. 
+
+
+# Importing required libraries
+
 import matplotlib.pyplot as plt
 import numpy as np
 import PIL
@@ -13,17 +24,25 @@ from keras.layers import Dense, Conv2D, MaxPool2D , Flatten
 from keras.preprocessing.image import ImageDataGenerator
 import math
 
+# Setting data set path, printing image count
+
 dataset_path = "/content/drive/MyDrive/Plant"
 data_dir = pathlib.Path(dataset_path)
 image_count = len(list(data_dir.glob('*/*.jpg')))
 print(image_count)
 
+# Opening random photo from set
+
 complexex = list(data_dir.glob('complex/*'))
 PIL.Image.open(str(complexex[15]))
+
+# Defining batch and image size
 
 batch_size = 36
 img_height = 128
 img_width = 128
+
+# Definition of train and val data sets
 
 train_ds = tf.keras.utils.image_dataset_from_directory(
   data_dir,
@@ -41,6 +60,8 @@ val_ds = tf.keras.utils.image_dataset_from_directory(
   image_size=(img_height, img_width),
   batch_size=batch_size)
 
+# Coutning and printing class names
+
 class_names = train_ds.class_names
 print(class_names)
 
@@ -51,7 +72,7 @@ print(class_names)
 #  'scab frog_eye_leaf_spot complex']
 # =============================================================================
 
-
+# Plotting of test images
 
 plt.figure(figsize=(10, 10))
 for images, labels in train_ds.take(1):
@@ -66,18 +87,25 @@ for image_batch, labels_batch in train_ds:
   print(labels_batch.shape)
   break
 
+# Autotuning
+
 AUTOTUNE = tf.data.AUTOTUNE
+
+# Prefetching to decrease memory cost
 
 train_ds = train_ds.cache().shuffle(1000).prefetch(buffer_size=AUTOTUNE)
 val_ds = val_ds.cache().prefetch(buffer_size=AUTOTUNE)
+
+# Definition of normalization layer and normalizing data set
 
 normalization_layer = layers.Rescaling(1./255)
 
 normalized_ds = train_ds.map(lambda x, y: (normalization_layer(x), y))
 image_batch, labels_batch = next(iter(normalized_ds))
 first_image = image_batch[0]
-# Notice the pixel values are now in `[0,1]`.
 print(np.min(first_image), np.max(first_image))
+
+# Building model in Keras API
 
 num_classes = len(class_names)
 
@@ -94,9 +122,13 @@ model = Sequential([
   layers.Dense(num_classes)
 ])
 
+# Compilation of model
+
 model.compile(optimizer='adam',
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
+
+# Printing model summary
 
 model.summary()
 
@@ -136,6 +168,8 @@ model.summary()
 # 
 # =============================================================================
 
+# Model run, adjust epochs, callbacks and others as necessary 
+
 epochs=10
 history = model.fit(
   train_ds,
@@ -166,6 +200,8 @@ history = model.fit(
 # 415/415 [==============================] - 166s 400ms/step - loss: 0.0840 - accuracy: 0.9746 - val_loss: 1.9374 - val_accuracy: 0.6492
 # =============================================================================
 
+# Plotting of model run
+
 acc = history.history['accuracy']
 val_acc = history.history['val_accuracy']
 
@@ -188,6 +224,7 @@ plt.legend(loc='upper right')
 plt.title('Training and Validation Loss')
 plt.show()
 
+# Definition of data sugmentation
 
 data_augmentation = keras.Sequential(
   [
@@ -200,6 +237,8 @@ data_augmentation = keras.Sequential(
   ]
 )
 
+# Plotting of test images
+
 plt.figure(figsize=(10, 10))
 for images, _ in train_ds.take(1):
   for i in range(9):
@@ -207,6 +246,8 @@ for images, _ in train_ds.take(1):
     ax = plt.subplot(3, 3, i + 1)
     plt.imshow(augmented_images[0].numpy().astype("uint8"))
     plt.axis("off")
+    
+# Building model in Keras API
     
 model = Sequential([
   data_augmentation,
@@ -223,9 +264,13 @@ model = Sequential([
   layers.Dense(num_classes, name="outputs")
 ])
 
+# Compilation of model
+
 model.compile(optimizer='adam',
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
+
+# Model run, adjust epochs, callbacks and others as necessary 
 
 epochs = 15
 history = model.fit(
@@ -267,6 +312,8 @@ history = model.fit(
 # 415/415 [==============================] - 192s 462ms/step - loss: 0.5776 - accuracy: 0.8102 - val_loss: 0.6433 - val_accuracy: 0.7928
 # =============================================================================
 
+# Plotting model run
+
 acc = history.history['accuracy']
 val_acc = history.history['val_accuracy']
 
@@ -288,6 +335,8 @@ plt.plot(epochs_range, val_loss, label='Validation Loss')
 plt.legend(loc='upper right')
 plt.title('Training and Validation Loss')
 plt.show()
+
+# Test Prediction, Change file path as necessary
 
 prediction_path = "/content/drive/MyDrive/powdery-mildew-lesions.jpg"
 
@@ -311,14 +360,20 @@ print(
 # This image most likely belongs to powdery_mildew with a 67.93 percent confidence.
 # =============================================================================
 
+# Setting dataset path, counting images and printing image count
+
 dataset_path = "/content/drive/MyDrive/Tomato"
 data_dir = pathlib.Path(dataset_path)
 image_count = len(list(data_dir.glob('*/*.jpg')))
 print(image_count)
 
+# Definition of batch size and image size
+
 batch_size = 18
 img_height = 128
 img_width = 128
+
+# Definition of data sets
 
 train_ds = tf.keras.utils.image_dataset_from_directory(
   data_dir,
@@ -336,6 +391,8 @@ val_ds = tf.keras.utils.image_dataset_from_directory(
   image_size=(img_height, img_width),
   batch_size=batch_size)
 
+# Defining and printing class names
+
 class_names = train_ds.class_names
 print(class_names)
 
@@ -344,6 +401,8 @@ print(class_names)
 #  'Spider_mites Two-spotted_spider_mite', 'Target_Spot', 'Tomato_Yellow_Leaf_Curl_Virus', 
 #  'Tomato_mosaic_virus', 'healthy', 'powdery_mildew']
 # =============================================================================
+
+# Plotting of test images
 
 plt.figure(figsize=(10, 10))
 for images, labels in train_ds.take(1):
@@ -358,10 +417,16 @@ for image_batch, labels_batch in train_ds:
   print(labels_batch.shape)
   break
 
+# Autotuning
+
 AUTOTUNE = tf.data.AUTOTUNE
+
+# Prefetching to decrease memory cost
 
 train_ds = train_ds.cache().shuffle(1000).prefetch(buffer_size=AUTOTUNE)
 val_ds = val_ds.cache().prefetch(buffer_size=AUTOTUNE)
+
+# Calculating normalization layer and definition of normalized data set
 
 normalization_layer = layers.Rescaling(1./255)
 normalized_ds = train_ds.map(lambda x, y: (normalization_layer(x), y))
@@ -369,7 +434,7 @@ image_batch, labels_batch = next(iter(normalized_ds))
 first_image = image_batch[0]
 print(np.min(first_image), np.max(first_image))
 
-
+# Plotting of test pictures
 
 plt.figure(figsize=(10, 10))
 for images, _ in train_ds.take(1):
@@ -379,10 +444,14 @@ for images, _ in train_ds.take(1):
     plt.imshow(augmented_images[0].numpy().astype("uint8"))
     plt.axis("off")
 
+# Definition of Early Stopping Callback
+
 early_stop = EarlyStopping(monitor='val_loss',
                            patience=10,
                            restore_best_weights=True,
                            mode='min')
+
+# Building model in Keras API
 
 num_classes = len(class_names)
 
@@ -401,15 +470,21 @@ model = Sequential([
   layers.Dense(num_classes, name="outputs")
 ])
 
+# Compilation of model
+
 model.compile(optimizer='adam'(leanning_rate=0.00001),
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
+
+# Computation of steps per epoch, adjust training and val size according to code executed above
 
 compute_steps_per_epoch = lambda x: int(math.ceil(1. * x / batch_size))
 training_size = 20668
 val_size = 5167
 steps_per_epoch = compute_steps_per_epoch(training_size)
 val_steps = compute_steps_per_epoch(val_size)
+
+# Model run, adjust epochs, callbacks and others as necessary 
 
 epochs = 25
 history = model.fit(
@@ -473,6 +548,8 @@ history = model.fit(
 # 575/575 [==============================] - 17s 30ms/step - loss: 0.2762 - accuracy: 0.9053 - val_loss: 0.4010 - val_accuracy: 0.8744
 # =============================================================================
 
+# Plotting of model run
+
 acc = history.history['accuracy']
 val_acc = history.history['val_accuracy']
 
@@ -494,6 +571,8 @@ plt.plot(epochs_range, val_loss, label='Validation Loss')
 plt.legend(loc='upper right')
 plt.title('Training and Validation Loss')
 plt.show()
+
+# Test Prediction, Change file path as necessary
 
 prediction_path = "/content/drive/MyDrive/mosiac_virus.jpg"
 
@@ -517,6 +596,8 @@ print(
 # This image most likely belongs to Septoria_leaf_spot with a 58.16 percent confidence.
 # =============================================================================
 
+# Test Prediction, Change file path as necessary
+
 prediction_path = "/content/drive/MyDrive/mosiac_virus2.jpg"
 
 
@@ -538,6 +619,9 @@ print(
 # 1/1 [==============================] - 0s 21ms/step
 # This image most likely belongs to Tomato_Yellow_Leaf_Curl_Virus with a 62.00 percent confidence.
 # =============================================================================
+
+
+# Test Prediction, Change file path as necessary
 
 prediction_path = "/content/drive/MyDrive/mosiac_virus3.jpg"
 
@@ -561,6 +645,9 @@ print(
 # This image most likely belongs to Late_blight with a 59.69 percent confidence.
 # =============================================================================
 
+# Building model in Keras API
+
+
 num_classes = len(class_names)
 
 model = Sequential([
@@ -582,9 +669,13 @@ model = Sequential([
   layers.Dense(num_classes, name="outputs")
 ])
 
+# Compiliation of model
+
 model.compile(optimizer='adam',
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
+
+# Print model summary
 
 model.summary()
 
@@ -637,6 +728,8 @@ model.summary()
 # _________________________________________________________________
 # =============================================================================
 
+
+# Model run, adjust epochs, callbacks and others as necessary 
 
 
 epochs = 50
@@ -714,6 +807,10 @@ history = model.fit(
 # 1149/1149 [==============================] - 16s 14ms/step - loss: 0.1840 - accuracy: 0.9373 - val_loss: 0.2516 - val_accuracy: 0.9245
 # =============================================================================
 
+
+# Plotting of model run
+
+
 acc = history.history['accuracy']
 val_acc = history.history['val_accuracy']
 
@@ -735,6 +832,7 @@ plt.legend(loc='upper right')
 plt.title('Training and Validation Loss')
 plt.show()
 
+# Test Prediction, Change file path as necessary
 
 prediction_path = "/content/drive/MyDrive/mosiac_virus.jpg"
 
@@ -758,6 +856,8 @@ print(
 # This image most likely belongs to Tomato_mosaic_virus with a 54.39 percent confidence.
 # =============================================================================
 
+# Test Prediction, Change file path as necessary
+
 prediction_path = "/content/drive/MyDrive/mosiac_virus2.jpg"
 
 
@@ -779,6 +879,9 @@ print(
 # 1/1 [==============================] - 0s 19ms/step
 # This image most likely belongs to Tomato_mosaic_virus with a 89.75 percent confidence.
 # =============================================================================
+
+
+# Test Prediction, Change file path as necessary
 
 prediction_path = "/content/drive/MyDrive/mosiac_virus3.jpg"
 
@@ -803,6 +906,14 @@ print(
 # =============================================================================
 
 
+# Conversion for TF Lite
+
+converter = tf.lite.TFLiteConverter.from_keras_model(model)
+tflite_model = converter.convert()
+
+# Save the model.
+with open('model.tflite', 'wb') as f:
+  f.write(tflite_model)
 
 
 
